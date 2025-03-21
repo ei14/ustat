@@ -32,8 +32,11 @@ void resizeAndPrint(int start) {
 	bartext[COMPS[i-1].pos + COMPS[i-1].prevlen] = '\0';
 }
 
+void handler_busy(int signum) {
+	return;
+}
 void handler(int signum) {
-	signal(SIGUSR1, handler);
+	signal(SIGUSR1, handler_busy);
 
 	for(int i = 0; i < LEN(COMPS); i++) {
 		if(COMPS[i].sig == 1) {
@@ -44,6 +47,8 @@ void handler(int signum) {
 	}
 	XStoreName(dpy, DefaultRootWindow(dpy), bartext);
 	XFlush(dpy);
+
+	signal(SIGUSR1, handler);
 }
 
 int main() {
@@ -84,7 +89,6 @@ int main() {
 			}
 		}
 		XStoreName(dpy, DefaultRootWindow(dpy), bartext);
-		//printf("%s\n", bartext);
 		XFlush(dpy);
 	}
 }
